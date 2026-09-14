@@ -8,7 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
-  html,body{margin:0;padding:0;height:100%;-webkit-text-size-adjust:100%;text-size-adjust:100%;}
+  html,body{margin:0;padding:0;height:100%;overflow-x:hidden;-webkit-text-size-adjust:100%;text-size-adjust:100%;}
   :root{
     --ink:#16233F;
     --ink-soft:#5C6B85;
@@ -246,16 +246,20 @@
   /* ---------- MOBILE ---------- */
   @media(max-width:640px){
     #ms-app{padding:0;min-height:100vh;}
-    #ms-app .sheet{border-radius:0;max-width:100%;box-shadow:none;min-height:100vh;display:flex;flex-direction:column;}
+    #ms-app .sheet{border-radius:0;max-width:100%;box-shadow:none;min-height:100vh;display:flex;flex-direction:column;min-width:0;}
+    #ms-app .sheet > *{min-width:0;}
     #ms-app .sheet .panel.active{flex:1 1 auto;}
     #ms-app .masthead{padding:20px 16px 16px;}
     #ms-app .panel{padding:18px 16px 30px;}
-    #ms-app .sub{font-size:13.5px;line-height:1.5;}
-    #ms-app .drop span, #ms-app .cat-item .meta{font-size:13px;}
-    #ms-app .step-tab{min-width:78px;font-size:10.5px;padding:9px 5px;}
-    #ms-app .step-tab .num{width:16px;height:16px;font-size:10px;line-height:16px;margin-right:4px;}
-    #ms-app .drop{padding:30px 14px;}
-    #ms-app .btn{padding:11px 16px;font-size:13.5px;flex:1 1 auto;}
+    #ms-app .sub{font-size:15px;line-height:1.55;}
+    #ms-app h2{font-size:21px;}
+    #ms-app .drop strong{font-size:18px;}
+    #ms-app .drop span, #ms-app .cat-item .meta{font-size:14px;}
+    #ms-app .cat-item .name{font-size:15px;}
+    #ms-app .step-tab{min-width:78px;font-size:11px;padding:10px 5px;}
+    #ms-app .step-tab .num{width:17px;height:17px;font-size:10.5px;line-height:17px;margin-right:4px;}
+    #ms-app .drop{padding:34px 14px;}
+    #ms-app .btn{padding:12px 16px;font-size:14.5px;flex:1 1 auto;}
     #ms-app .btn-row{gap:8px;}
 
     /* stack the per-line inputs instead of squeezing a 5/6-col grid */
@@ -279,8 +283,6 @@
     #ms-app .itemline label.field-label{display:block;font-size:10.5px;color:var(--ink-soft);margin-bottom:3px;}
 
     #ms-app .txhead{font-size:12.5px;padding:9px 12px;}
-    #ms-app h2{font-size:18px;}
-    #ms-app .sub{font-size:13px;}
     #ms-app .stat-grid{grid-template-columns:repeat(2,1fr);}
     #ms-app .stat .num{font-size:20px;}
     #ms-app table.final th, #ms-app table.final td{padding:7px 8px;font-size:12.5px;}
