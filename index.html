@@ -43,7 +43,7 @@
   }
   #ms-app .masthead h1{
     font-family:'Archivo Black',sans-serif;
-    font-size:clamp(28px,5vw,42px);
+    font-size:clamp(24px,7vw,42px);
     line-height:1.05;
     margin:0 0 10px;
     letter-spacing:-0.01em;
@@ -52,7 +52,7 @@
     margin:0;
     max-width:56ch;
     color:var(--ink-soft);
-    font-size:15px;
+    font-size:14px;
   }
   #ms-app .steps{
     display:flex;
@@ -60,10 +60,11 @@
     border-bottom:1px solid var(--line);
     background:var(--paper-dim);
     overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
   }
   #ms-app .step-tab{
     flex:1 1 0;
-    min-width:110px;
+    min-width:96px;
     padding:12px 10px;
     font-size:12.5px;
     font-weight:600;
@@ -88,7 +89,7 @@
 
   #ms-app h2{
     font-family:'Archivo Black',sans-serif;
-    font-size:22px;
+    font-size:20px;
     margin:0 0 6px;
   }
   #ms-app .sub{color:var(--ink-soft);font-size:14px;margin:0 0 22px;max-width:64ch;}
@@ -137,20 +138,20 @@
     padding:12px 14px;border:1px solid var(--line);border-radius:var(--radius);
     background:#fff;
   }
-  #ms-app .cat-item input{width:17px;height:17px;accent-color:var(--red);}
-  #ms-app .cat-item .name{font-weight:600;flex:1;}
-  #ms-app .cat-item .meta{font-size:12.5px;color:var(--ink-soft);}
+  #ms-app .cat-item input{width:17px;height:17px;accent-color:var(--red);flex:0 0 auto;}
+  #ms-app .cat-item .name{font-weight:600;flex:1;word-break:break-word;}
+  #ms-app .cat-item .meta{font-size:12.5px;color:var(--ink-soft);white-space:nowrap;}
 
   #ms-app .txgroup{
     border:1px solid var(--line);border-radius:var(--radius);
     margin-bottom:14px;background:#fff;overflow:hidden;
   }
   #ms-app .txhead{
-    display:flex;justify-content:space-between;gap:12px;
+    display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 12px;
     padding:10px 14px;background:var(--paper-dim);border-bottom:1px solid var(--line);
     font-size:13px;
   }
-  #ms-app .txhead .note{font-style:italic;color:var(--ink-soft);}
+  #ms-app .txhead .note{font-style:italic;color:var(--ink-soft);word-break:break-word;}
   #ms-app .txhead .amt{font-weight:700;white-space:nowrap;}
   #ms-app .itemline{
     display:grid;
@@ -182,44 +183,49 @@
   #ms-app .merge-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
   #ms-app .merge-actions input{
     font-family:'Work Sans',sans-serif;padding:7px 9px;border:1px solid var(--line);
-    border-radius:var(--radius);font-size:13.5px;min-width:180px;
+    border-radius:var(--radius);font-size:13.5px;min-width:160px;flex:1 1 160px;
   }
   #ms-app .merge-card.resolved{opacity:.55;}
 
+  #ms-app .table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
   #ms-app table.final{width:100%;border-collapse:collapse;margin-top:10px;font-size:13.5px;}
   #ms-app table.final th, #ms-app table.final td{
     text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);
   }
-  #ms-app table.final th{font-size:11.5px;text-transform:none;color:var(--ink-soft);font-weight:700;}
+  #ms-app table.final th{font-size:11.5px;text-transform:none;color:var(--ink-soft);font-weight:700;white-space:nowrap;}
   #ms-app table.final input{
     width:100%;padding:5px 7px;border:1px solid var(--line);border-radius:var(--radius);font-size:13px;
   }
+  #ms-app #detailTable{min-width:600px;}
+  #ms-app #finalNameTable{min-width:420px;}
 
   #ms-app .period-filter{
     display:flex;align-items:center;gap:14px;flex-wrap:wrap;
     background:#fff;border:1px solid var(--line);border-radius:var(--radius);
     padding:12px 16px;margin-bottom:20px;font-size:13.5px;
   }
-  #ms-app .period-filter label{display:flex;align-items:center;gap:6px;font-weight:600;color:var(--ink-soft);}
+  #ms-app .period-filter label{display:flex;align-items:center;gap:6px;font-weight:600;color:var(--ink-soft);flex-wrap:wrap;}
   #ms-app .period-filter input[type=date]{
     font-family:'Work Sans',sans-serif;padding:6px 8px;border:1px solid var(--line);
-    border-radius:var(--radius);font-size:13.5px;color:var(--ink);
+    border-radius:var(--radius);font-size:13.5px;color:var(--ink);max-width:100%;
   }
 
-  #ms-app .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:26px;}
+  #ms-app .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:26px;}
   #ms-app .stat{
     background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:16px;
   }
-  #ms-app .stat .num{font-family:'Archivo Black',sans-serif;font-size:26px;line-height:1;margin-bottom:4px;}
+  #ms-app .stat .num{font-family:'Archivo Black',sans-serif;font-size:24px;line-height:1.1;margin-bottom:4px;word-break:break-word;}
   #ms-app .stat .lbl{font-size:12.5px;color:var(--ink-soft);}
   #ms-app .stat.accent{background:var(--ink);color:var(--paper);}
   #ms-app .stat.accent .lbl{color:#A9B6CC;}
 
-  #ms-app .chart-wrap{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:18px;margin-bottom:20px;}
+  #ms-app .chart-wrap{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:18px;margin-bottom:20px;min-width:0;}
   #ms-app .chart-wrap h3{margin:0 0 12px;font-size:14px;}
+  #ms-app .chart-wrap svg{max-width:100%;height:auto;}
   #ms-app .bar-seg, #ms-app .donut-seg{cursor:pointer;transition:opacity .12s ease;}
   #ms-app .bar-seg:hover, #ms-app .donut-seg:hover{opacity:.72;}
-  #ms-app .two-col{display:grid;grid-template-columns:1.4fr 1fr;gap:16px;}
+  #ms-app .two-col{display:grid;grid-template-columns:1.4fr 1fr;gap:16px;min-width:0;}
+  #ms-app .two-col > div{min-width:0;}
   @media(max-width:720px){#ms-app .two-col{grid-template-columns:1fr;}}
 
   #ms-app .note-box{
@@ -229,6 +235,46 @@
   #ms-app .hidden{display:none !important;}
   #ms-app .field-label{display:block;font-size:12px;font-weight:700;color:var(--ink-soft);margin-bottom:6px;}
   #ms-app .size-help{font-size:12px;color:var(--ink-soft);margin-top:10px;}
+
+  /* ---------- MOBILE ---------- */
+  @media(max-width:640px){
+    #ms-app{padding:14px 8px 40px;}
+    #ms-app .sheet{border-radius:8px;}
+    #ms-app .masthead{padding:22px 18px 18px;}
+    #ms-app .panel{padding:20px 16px 30px;}
+    #ms-app .step-tab{min-width:78px;font-size:10.5px;padding:9px 5px;}
+    #ms-app .step-tab .num{width:16px;height:16px;font-size:10px;line-height:16px;margin-right:4px;}
+    #ms-app .drop{padding:30px 14px;}
+    #ms-app .btn{padding:11px 16px;font-size:13.5px;flex:1 1 auto;}
+    #ms-app .btn-row{gap:8px;}
+
+    /* stack the per-line inputs instead of squeezing a 5/6-col grid */
+    #ms-app .itemline,
+    #ms-app .txgroup.multi .itemline{
+      grid-template-columns:1fr 1fr;
+      grid-template-areas:
+        "flag flag"
+        "design design"
+        "qty size"
+        "amount rm";
+      row-gap:6px;
+    }
+    #ms-app .itemline .flagtag{grid-area:flag;margin-top:0;}
+    #ms-app .itemline .design{grid-area:design;}
+    #ms-app .itemline .qty{grid-area:qty;}
+    #ms-app .itemline .size{grid-area:size;}
+    #ms-app .itemline .amtcol{grid-area:amount;display:block;}
+    #ms-app .txgroup:not(.multi) .itemline .amtcol{display:none;}
+    #ms-app .itemline > span{grid-area:rm;justify-self:end;align-self:center;}
+    #ms-app .itemline label.field-label{display:block;font-size:10.5px;color:var(--ink-soft);margin-bottom:3px;}
+
+    #ms-app .txhead{font-size:12.5px;padding:9px 12px;}
+    #ms-app h2{font-size:18px;}
+    #ms-app .sub{font-size:13px;}
+    #ms-app .stat-grid{grid-template-columns:repeat(2,1fr);}
+    #ms-app .stat .num{font-size:20px;}
+    #ms-app table.final th, #ms-app table.final td{padding:7px 8px;font-size:12.5px;}
+  }
 </style>
 
 <div id="ms-app">
@@ -252,7 +298,7 @@
       <p class="sub">Dalla app: Impostazioni → Esporta dati (CSV). Qui dentro resta solo nel tuo browser, non viene inviato da nessuna parte.</p>
       <div class="drop" id="dropzone">
         <strong>Trascina qui il file CSV</strong>
-        <span>oppure clicca per sceglierlo dal computer</span>
+        <span>oppure tocca per sceglierlo dal telefono/computer</span>
       </div>
       <input type="file" id="fileInput" accept=".csv">
       <p id="fileError" class="sub" style="color:var(--red);display:none;"></p>
@@ -295,10 +341,12 @@
       <p class="sub" id="mergeIntro">Confronto i nomi dei modelli per trovare varianti dello stesso design.</p>
       <div id="mergeSuggestions"></div>
       <h3 style="font-size:14px;margin:22px 0 8px;">Tutti i modelli trovati</h3>
-      <table class="final" id="finalNameTable">
-        <thead><tr><th>Nome originale</th><th>Pezzi</th><th>Nome finale (modificabile)</th></tr></thead>
-        <tbody></tbody>
-      </table>
+      <div class="table-scroll">
+        <table class="final" id="finalNameTable">
+          <thead><tr><th>Nome originale</th><th>Pezzi</th><th>Nome finale (modificabile)</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
       <div class="btn-row">
         <button class="btn ghost" id="backTo3">Indietro</button>
         <button class="btn secondary" id="saveMappings">💾 Salva queste scelte per la prossima volta</button>
@@ -322,10 +370,12 @@
       </div>
       <div class="chart-wrap">
         <h3>Dettaglio per modello</h3>
-        <table class="final" id="detailTable">
-          <thead><tr><th>Modello</th><th>Pezzi</th><th>Taglie</th><th>Ricavo noto</th><th>Prezzo medio</th><th>Prima · Ultima vendita</th></tr></thead>
-          <tbody></tbody>
-        </table>
+        <div class="table-scroll">
+          <table class="final" id="detailTable">
+            <thead><tr><th>Modello</th><th>Pezzi</th><th>Taglie</th><th>Ricavo noto</th><th>Prezzo medio</th><th>Prima · Ultima vendita</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
       </div>
       <div class="btn-row">
         <button class="btn ghost" id="backTo4">Indietro</button>
@@ -409,7 +459,7 @@
     const leftPad = Math.min(200, Math.max(...labels.map(l=>l.length)) * 6.5 + 14);
     const rightPad = 46;
     const h = labels.length * (barH+gap) + gap;
-    let svg = `<svg viewBox="0 0 ${svgW} ${h}" width="100%" height="${h}" xmlns="http://www.w3.org/2000/svg">`;
+    let svg = `<svg viewBox="0 0 ${svgW} ${h}" width="100%" height="${h}" preserveAspectRatio="xMinYMin meet" xmlns="http://www.w3.org/2000/svg">`;
     labels.forEach((label,i)=>{
       const y = gap + i*(barH+gap);
       const w = (values[i]/max) * (svgW-leftPad-rightPad);
@@ -450,7 +500,7 @@
       legend += `<span style="display:inline-flex;align-items:center;gap:5px;"><span style="width:10px;height:10px;background:${colors[i%colors.length]};display:inline-block;border-radius:2px;"></span>${escapeHtml(label)} (${values[i]})</span>`;
     });
     legend += '</div>';
-    container.innerHTML = `<svg viewBox="0 0 200 200" width="200" height="200" style="display:block;margin:0 auto;">${paths}</svg>${legend}`;
+    container.innerHTML = `<svg viewBox="0 0 200 200" width="200" height="200" style="display:block;margin:0 auto;max-width:100%;">${paths}</svg>${legend}`;
   }
 
   function levenshtein(a,b){
