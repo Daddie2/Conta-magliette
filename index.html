@@ -3,21 +3,21 @@
 
 <style>
   :root{
-    --ink:#17140F;
-    --ink-soft:#4a463f;
-    --paper:#F3EFE4;
-    --paper-dim:#E7E1D0;
-    --red:#C4272A;
-    --red-dim:#e9d3d0;
-    --olive:#4B5D3A;
-    --olive-dim:#dbe2d2;
-    --line:#c9c2ab;
+    --ink:#16233F;
+    --ink-soft:#5C6B85;
+    --paper:#F5F7FA;
+    --paper-dim:#E7ECF2;
+    --red:#FF6F59;
+    --red-dim:#FFE1DB;
+    --olive:#2E7873;
+    --olive-dim:#D7EAE8;
+    --line:#D4D9E2;
     --radius:2px;
   }
   *{box-sizing:border-box;}
   #ms-app{
-    background:var(--ink);
-    color:var(--paper);
+    background:#fff;
+    color:var(--ink);
     font-family:'Work Sans',sans-serif;
     padding:32px 20px 60px;
     min-height:100%;
@@ -28,8 +28,13 @@
     margin:0 auto;
     background:var(--paper);
     color:var(--ink);
-    border-radius:var(--radius);
-    box-shadow:0 30px 60px -30px rgba(0,0,0,.6);
+    border-radius:10px;
+    border:2px solid var(--ink);
+    box-shadow:
+      0 1px 0 rgba(22,35,63,.08),
+      0 8px 0 -4px rgba(22,35,63,.03),
+      0 24px 56px -18px rgba(22,35,63,.35),
+      0 4px 16px -4px rgba(22,35,63,.18);
     overflow:hidden;
   }
   #ms-app .masthead{
@@ -62,7 +67,7 @@
     padding:12px 10px;
     font-size:12.5px;
     font-weight:600;
-    color:#9a927e;
+    color:var(--ink-soft);
     text-align:center;
     border-right:1px solid var(--line);
     white-space:nowrap;
@@ -189,6 +194,17 @@
     width:100%;padding:5px 7px;border:1px solid var(--line);border-radius:var(--radius);font-size:13px;
   }
 
+  #ms-app .period-filter{
+    display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+    background:#fff;border:1px solid var(--line);border-radius:var(--radius);
+    padding:12px 16px;margin-bottom:20px;font-size:13.5px;
+  }
+  #ms-app .period-filter label{display:flex;align-items:center;gap:6px;font-weight:600;color:var(--ink-soft);}
+  #ms-app .period-filter input[type=date]{
+    font-family:'Work Sans',sans-serif;padding:6px 8px;border:1px solid var(--line);
+    border-radius:var(--radius);font-size:13.5px;color:var(--ink);
+  }
+
   #ms-app .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:26px;}
   #ms-app .stat{
     background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:16px;
@@ -196,10 +212,12 @@
   #ms-app .stat .num{font-family:'Archivo Black',sans-serif;font-size:26px;line-height:1;margin-bottom:4px;}
   #ms-app .stat .lbl{font-size:12.5px;color:var(--ink-soft);}
   #ms-app .stat.accent{background:var(--ink);color:var(--paper);}
-  #ms-app .stat.accent .lbl{color:#cfc9b8;}
+  #ms-app .stat.accent .lbl{color:#A9B6CC;}
 
   #ms-app .chart-wrap{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:18px;margin-bottom:20px;}
   #ms-app .chart-wrap h3{margin:0 0 12px;font-size:14px;}
+  #ms-app .bar-seg, #ms-app .donut-seg{cursor:pointer;transition:opacity .12s ease;}
+  #ms-app .bar-seg:hover, #ms-app .donut-seg:hover{opacity:.72;}
   #ms-app .two-col{display:grid;grid-template-columns:1.4fr 1fr;gap:16px;}
   @media(max-width:720px){#ms-app .two-col{grid-template-columns:1fr;}}
 
@@ -282,6 +300,11 @@
     <div class="panel" id="panel-5">
       <h2>Report vendite magliette</h2>
       <p class="sub" id="reportSub"></p>
+      <div class="period-filter">
+        <label>Da <input type="date" id="dateFrom"></label>
+        <label>A <input type="date" id="dateTo"></label>
+        <button class="btn ghost" id="clearDates">Tutto il periodo</button>
+      </div>
       <div class="stat-grid" id="statGrid"></div>
       <div class="two-col">
         <div class="chart-wrap"><h3>Pezzi venduti per modello</h3><div id="chartModel"></div></div>
@@ -370,6 +393,7 @@
   // Hand-rolled horizontal bar chart, no dependencies.
   function renderBarChart(container, labels, values, color){
     if(!labels.length){ container.innerHTML = '<p style="font-size:13px;color:var(--ink-soft);">Nessun dato.</p>'; return; }
+    const total = values.reduce((a,b)=>a+b,0) || 1;
     const max = Math.max(...values, 1);
     const barH = 24, gap = 10, svgW = 600;
     const leftPad = Math.min(200, Math.max(...labels.map(l=>l.length)) * 6.5 + 14);
@@ -379,9 +403,10 @@
     labels.forEach((label,i)=>{
       const y = gap + i*(barH+gap);
       const w = (values[i]/max) * (svgW-leftPad-rightPad);
-      svg += `<text x="${leftPad-8}" y="${y+barH/2+4}" text-anchor="end" font-size="12" font-family="Work Sans, sans-serif" fill="#17140F">${escapeHtml(label)}</text>`;
-      svg += `<rect x="${leftPad}" y="${y}" width="${Math.max(w,2)}" height="${barH}" fill="${color}" rx="2"/>`;
-      svg += `<text x="${leftPad+w+8}" y="${y+barH/2+4}" font-size="12" font-family="Work Sans, sans-serif" fill="#4a463f">${values[i]}</text>`;
+      const pct = ((values[i]/total)*100).toFixed(1);
+      svg += `<text x="${leftPad-8}" y="${y+barH/2+4}" text-anchor="end" font-size="12" font-family="Work Sans, sans-serif" fill="var(--ink)">${escapeHtml(label)}</text>`;
+      svg += `<rect class="bar-seg" x="${leftPad}" y="${y}" width="${Math.max(w,2)}" height="${barH}" fill="${color}" rx="2"><title>${escapeHtml(label)}: ${values[i]} pezzi (${pct}%)</title></rect>`;
+      svg += `<text x="${leftPad+w+8}" y="${y+barH/2+4}" font-size="12" font-family="Work Sans, sans-serif" fill="var(--ink-soft)">${values[i]}</text>`;
     });
     svg += '</svg>';
     container.innerHTML = svg;
@@ -404,8 +429,9 @@
       const ix1=cx+innerR*Math.cos(angle), iy1=cy+innerR*Math.sin(angle);
       const ix2=cx+innerR*Math.cos(end), iy2=cy+innerR*Math.sin(end);
       const color = colors[i % colors.length];
+      const pct = (frac*100).toFixed(1);
       if(values[i] > 0){
-        paths += `<path d="M ${x1} ${y1} A ${r} ${r} 0 ${large} 1 ${x2} ${y2} L ${ix2} ${iy2} A ${innerR} ${innerR} 0 ${large} 0 ${ix1} ${iy1} Z" fill="${color}"/>`;
+        paths += `<path class="donut-seg" d="M ${x1} ${y1} A ${r} ${r} 0 ${large} 1 ${x2} ${y2} L ${ix2} ${iy2} A ${innerR} ${innerR} 0 ${large} 0 ${ix1} ${iy1} Z" fill="${color}"><title>${escapeHtml(label)}: ${values[i]} pezzi (${pct}%)</title></path>`;
       }
       angle = end;
     });
@@ -778,6 +804,12 @@
   });
   el('toStep5').addEventListener('click', ()=> goStep(5));
   el('backTo4').addEventListener('click', ()=>goStep(4));
+  el('dateFrom').addEventListener('change', renderReport);
+  el('dateTo').addEventListener('change', renderReport);
+  el('clearDates').addEventListener('click', ()=>{
+    el('dateFrom').value=''; el('dateTo').value='';
+    renderReport();
+  });
 
   // ---------- STEP 5: report ----------
 
@@ -786,16 +818,29 @@
     return mergeResolutions[key] || design || '(senza nome)';
   }
 
+  function getReportTx(){
+    const from = el('dateFrom').value;
+    const to = el('dateTo').value;
+    if(!from && !to) return filteredTx;
+    return filteredTx.filter(tx=>{
+      const d = (tx.date||'').slice(0,10);
+      if(from && d < from) return false;
+      if(to && d > to) return false;
+      return true;
+    });
+  }
+
   function renderReport(){
+    const tx = getReportTx();
     const perDesign = {};
     let totalQty = 0;
     let totalRevenueAuthoritative = 0;
     let sizeTotals = {};
 
-    filteredTx.forEach(tx=> totalRevenueAuthoritative += parseFloat(tx.amount||0));
+    tx.forEach(t=> totalRevenueAuthoritative += parseFloat(t.amount||0));
 
-    filteredTx.forEach(tx=>{
-      const lines = txLines[tx.id];
+    tx.forEach(t=>{
+      const lines = txLines[t.id];
       const single = lines.length===1;
       lines.forEach(line=>{
         const name = canonicalOf(line.design);
@@ -806,10 +851,10 @@
         const sizeKey = line.size ? line.size.toLowerCase() : '?';
         d.sizes[sizeKey] = (d.sizes[sizeKey]||0) + line.qty;
         sizeTotals[sizeKey] = (sizeTotals[sizeKey]||0) + line.qty;
-        d.dates.push(tx.date);
+        d.dates.push(t.date);
 
         let rev = null;
-        if(single) rev = parseFloat(tx.amount||0);
+        if(single) rev = parseFloat(t.amount||0);
         else if(line.manualAmount!=null) rev = line.manualAmount;
         if(rev!=null){ d.revenue += rev; d.revenueQty += line.qty; }
       });
@@ -817,10 +862,13 @@
 
     const designs = Object.entries(perDesign).sort((a,b)=>b[1].qty-a[1].qty);
     const topDesign = designs[0];
-    const topSize = Object.entries(sizeTotals).sort((a,b)=>b[1]-a[1])[0];
+    const topSize = Object.entries(sizeTotals).filter(([s])=>s!=='?').sort((a,b)=>b[1]-a[1])[0];
     const avgPriceOverall = totalQty ? (totalRevenueAuthoritative/totalQty) : 0;
 
-    el('reportSub').textContent = `${filteredTx.length} vendite registrate, ${designs.length} modelli distinti.`;
+    const periodLabel = (el('dateFrom').value || el('dateTo').value)
+      ? ` nel periodo selezionato`
+      : '';
+    el('reportSub').textContent = `${tx.length} vendite registrate${periodLabel}, ${designs.length} modelli distinti.`;
 
     el('statGrid').innerHTML = `
       <div class="stat accent"><div class="num">${totalQty}</div><div class="lbl">Magliette vendute</div></div>
@@ -853,14 +901,14 @@
     window.__msReportData = designs;
 
     // charts (hand-rolled SVG, no external dependency)
-    renderBarChart(el('chartModel'), designs.map(d=>d[0]), designs.map(d=>d[1].qty), '#C4272A');
+    renderBarChart(el('chartModel'), designs.map(d=>d[0]), designs.map(d=>d[1].qty), '#FF6F59');
 
     const sizeLabelsSorted = SIZE_ORDER.filter(s=>sizeTotals[s]!=null);
     renderDonutChart(
       el('chartSize'),
       sizeLabelsSorted.map(s=>s==='?'?'Non specificata':s.toUpperCase()),
       sizeLabelsSorted.map(s=>sizeTotals[s]),
-      ['#C4272A','#4B5D3A','#17140F','#9a927e','#e8b4a0','#8fa876','#d9cfa6','#6b6152','#b23b3e']
+      ['#FF6F59','#16233F','#E3B23C','#2E7873','#8AA1B1','#C9584A','#5C8D89','#B0BEC9','#F2A65A']
     );
   }
 
