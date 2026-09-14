@@ -1,0 +1,892 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --ink:#17140F;
+    --ink-soft:#4a463f;
+    --paper:#F3EFE4;
+    --paper-dim:#E7E1D0;
+    --red:#C4272A;
+    --red-dim:#e9d3d0;
+    --olive:#4B5D3A;
+    --olive-dim:#dbe2d2;
+    --line:#c9c2ab;
+    --radius:2px;
+  }
+  *{box-sizing:border-box;}
+  #ms-app{
+    background:var(--ink);
+    color:var(--paper);
+    font-family:'Work Sans',sans-serif;
+    padding:32px 20px 60px;
+    min-height:100%;
+    line-height:1.45;
+  }
+  #ms-app .sheet{
+    max-width:920px;
+    margin:0 auto;
+    background:var(--paper);
+    color:var(--ink);
+    border-radius:var(--radius);
+    box-shadow:0 30px 60px -30px rgba(0,0,0,.6);
+    overflow:hidden;
+  }
+  #ms-app .masthead{
+    padding:36px 40px 28px;
+    border-bottom:3px solid var(--ink);
+  }
+  #ms-app .masthead h1{
+    font-family:'Archivo Black',sans-serif;
+    font-size:clamp(28px,5vw,42px);
+    line-height:1.05;
+    margin:0 0 10px;
+    letter-spacing:-0.01em;
+  }
+  #ms-app .masthead p{
+    margin:0;
+    max-width:56ch;
+    color:var(--ink-soft);
+    font-size:15px;
+  }
+  #ms-app .steps{
+    display:flex;
+    gap:0;
+    border-bottom:1px solid var(--line);
+    background:var(--paper-dim);
+    overflow-x:auto;
+  }
+  #ms-app .step-tab{
+    flex:1 1 0;
+    min-width:110px;
+    padding:12px 10px;
+    font-size:12.5px;
+    font-weight:600;
+    color:#9a927e;
+    text-align:center;
+    border-right:1px solid var(--line);
+    white-space:nowrap;
+    position:relative;
+  }
+  #ms-app .step-tab:last-child{border-right:none;}
+  #ms-app .step-tab.done{color:var(--olive);}
+  #ms-app .step-tab.active{color:var(--ink);background:var(--paper);}
+  #ms-app .step-tab .num{
+    display:inline-block;width:18px;height:18px;border-radius:50%;
+    background:var(--line);color:var(--paper);font-size:11px;line-height:18px;margin-right:6px;
+  }
+  #ms-app .step-tab.active .num{background:var(--red);color:var(--paper);}
+  #ms-app .step-tab.done .num{background:var(--olive);color:var(--paper);}
+
+  #ms-app .panel{padding:32px 40px 40px;display:none;}
+  #ms-app .panel.active{display:block;}
+
+  #ms-app h2{
+    font-family:'Archivo Black',sans-serif;
+    font-size:22px;
+    margin:0 0 6px;
+  }
+  #ms-app .sub{color:var(--ink-soft);font-size:14px;margin:0 0 22px;max-width:64ch;}
+
+  #ms-app .drop{
+    border:2px dashed var(--line);
+    border-radius:var(--radius);
+    padding:44px 20px;
+    text-align:center;
+    cursor:pointer;
+    transition:border-color .15s, background .15s;
+  }
+  #ms-app .drop:hover, #ms-app .drop.drag{
+    border-color:var(--red);
+    background:var(--red-dim);
+  }
+  #ms-app .drop strong{display:block;font-size:16px;margin-bottom:4px;}
+  #ms-app .drop span{font-size:13px;color:var(--ink-soft);}
+  #ms-app input[type=file]{display:none;}
+
+  #ms-app .btn{
+    font-family:'Work Sans',sans-serif;
+    font-weight:600;
+    font-size:14px;
+    padding:11px 20px;
+    border-radius:var(--radius);
+    border:2px solid var(--ink);
+    background:var(--ink);
+    color:var(--paper);
+    cursor:pointer;
+    transition:transform .08s ease;
+  }
+  #ms-app .btn:hover{transform:translateY(-1px);}
+  #ms-app .btn:active{transform:translateY(0);}
+  #ms-app .btn.secondary{background:transparent;color:var(--ink);}
+  #ms-app .btn.ghost{background:transparent;color:var(--ink-soft);border-color:var(--line);font-weight:500;}
+  #ms-app .btn.red{background:var(--red);border-color:var(--red);}
+  #ms-app .btn.olive{background:var(--olive);border-color:var(--olive);}
+  #ms-app .btn:disabled{opacity:.4;cursor:not-allowed;transform:none;}
+  #ms-app .btn-row{display:flex;gap:10px;margin-top:26px;flex-wrap:wrap;}
+
+  #ms-app .cat-list{display:flex;flex-direction:column;gap:8px;margin-bottom:8px;}
+  #ms-app .cat-item{
+    display:flex;align-items:center;gap:10px;
+    padding:12px 14px;border:1px solid var(--line);border-radius:var(--radius);
+    background:#fff;
+  }
+  #ms-app .cat-item input{width:17px;height:17px;accent-color:var(--red);}
+  #ms-app .cat-item .name{font-weight:600;flex:1;}
+  #ms-app .cat-item .meta{font-size:12.5px;color:var(--ink-soft);}
+
+  #ms-app .txgroup{
+    border:1px solid var(--line);border-radius:var(--radius);
+    margin-bottom:14px;background:#fff;overflow:hidden;
+  }
+  #ms-app .txhead{
+    display:flex;justify-content:space-between;gap:12px;
+    padding:10px 14px;background:var(--paper-dim);border-bottom:1px solid var(--line);
+    font-size:13px;
+  }
+  #ms-app .txhead .note{font-style:italic;color:var(--ink-soft);}
+  #ms-app .txhead .amt{font-weight:700;white-space:nowrap;}
+  #ms-app .itemline{
+    display:grid;
+    grid-template-columns:56px 1fr 90px 100px auto;
+    gap:8px;align-items:center;
+    padding:9px 14px;border-top:1px solid #eee;
+  }
+  #ms-app .itemline:first-of-type{border-top:none;}
+  #ms-app .itemline.flag{background:var(--red-dim);}
+  #ms-app .itemline input, #ms-app .itemline select{
+    font-family:'Work Sans',sans-serif;
+    font-size:13.5px;padding:6px 8px;border:1px solid var(--line);border-radius:var(--radius);
+    width:100%;background:#fff;color:var(--ink);
+  }
+  #ms-app .flagtag{font-size:11px;color:var(--red);font-weight:700;grid-column:1/-1;margin-top:-2px;}
+  #ms-app .txfoot{padding:8px 14px;border-top:1px solid #eee;}
+  #ms-app .amtcol{display:none;}
+  #ms-app .txgroup.multi .amtcol{display:block;}
+  #ms-app .txgroup.multi .itemline{grid-template-columns:56px 1fr 90px 100px 90px auto;}
+  #ms-app .linklink{background:none;border:none;color:var(--olive);font-size:12.5px;font-weight:600;cursor:pointer;text-decoration:underline;padding:0;}
+  #ms-app .rm{background:none;border:none;color:var(--red);font-size:16px;cursor:pointer;line-height:1;padding:2px 6px;}
+
+  #ms-app .merge-card{
+    border:1px solid var(--line);border-radius:var(--radius);background:#fff;
+    padding:16px 18px;margin-bottom:12px;
+  }
+  #ms-app .merge-card p{margin:0 0 10px;font-size:14.5px;}
+  #ms-app .merge-card .names{font-weight:700;}
+  #ms-app .merge-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+  #ms-app .merge-actions input{
+    font-family:'Work Sans',sans-serif;padding:7px 9px;border:1px solid var(--line);
+    border-radius:var(--radius);font-size:13.5px;min-width:180px;
+  }
+  #ms-app .merge-card.resolved{opacity:.55;}
+
+  #ms-app table.final{width:100%;border-collapse:collapse;margin-top:10px;font-size:13.5px;}
+  #ms-app table.final th, #ms-app table.final td{
+    text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);
+  }
+  #ms-app table.final th{font-size:11.5px;text-transform:none;color:var(--ink-soft);font-weight:700;}
+  #ms-app table.final input{
+    width:100%;padding:5px 7px;border:1px solid var(--line);border-radius:var(--radius);font-size:13px;
+  }
+
+  #ms-app .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:26px;}
+  #ms-app .stat{
+    background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:16px;
+  }
+  #ms-app .stat .num{font-family:'Archivo Black',sans-serif;font-size:26px;line-height:1;margin-bottom:4px;}
+  #ms-app .stat .lbl{font-size:12.5px;color:var(--ink-soft);}
+  #ms-app .stat.accent{background:var(--ink);color:var(--paper);}
+  #ms-app .stat.accent .lbl{color:#cfc9b8;}
+
+  #ms-app .chart-wrap{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:18px;margin-bottom:20px;}
+  #ms-app .chart-wrap h3{margin:0 0 12px;font-size:14px;}
+  #ms-app .two-col{display:grid;grid-template-columns:1.4fr 1fr;gap:16px;}
+  @media(max-width:720px){#ms-app .two-col{grid-template-columns:1fr;}}
+
+  #ms-app .note-box{
+    font-size:12.5px;color:var(--ink-soft);background:var(--olive-dim);border-left:3px solid var(--olive);
+    padding:10px 12px;margin-bottom:18px;border-radius:var(--radius);
+  }
+  #ms-app .hidden{display:none !important;}
+  #ms-app .field-label{display:block;font-size:12px;font-weight:700;color:var(--ink-soft);margin-bottom:6px;}
+  #ms-app .size-help{font-size:12px;color:var(--ink-soft);margin-top:10px;}
+</style>
+
+<div id="ms-app">
+  <div class="sheet">
+    <div class="masthead">
+      <h1>Conta magliette</h1>
+      <p>Carica l'export CSV di Sossoldi: estraggo dalle note le vendite, ti chiedo di confermare taglie e modelli, e ti do il riepilogo pronto — pezzi, taglie, ricavi, prezzo medio.</p>
+    </div>
+
+    <div class="steps">
+      <div class="step-tab active" data-step="1"><span class="num">1</span>Carica file</div>
+      <div class="step-tab" data-step="2"><span class="num">2</span>Categorie</div>
+      <div class="step-tab" data-step="3"><span class="num">3</span>Verifica righe</div>
+      <div class="step-tab" data-step="4"><span class="num">4</span>Unisci nomi</div>
+      <div class="step-tab" data-step="5"><span class="num">5</span>Report</div>
+    </div>
+
+    <!-- STEP 1 -->
+    <div class="panel active" id="panel-1">
+      <h2>Carica l'export</h2>
+      <p class="sub">Dalla app: Impostazioni → Esporta dati (CSV). Qui dentro resta solo nel tuo browser, non viene inviato da nessuna parte.</p>
+      <div class="drop" id="dropzone">
+        <strong>Trascina qui il file CSV</strong>
+        <span>oppure clicca per sceglierlo dal computer</span>
+      </div>
+      <input type="file" id="fileInput" accept=".csv">
+      <p id="fileError" class="sub" style="color:var(--red);display:none;"></p>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="panel" id="panel-2">
+      <h2>Quali categorie sono vendite di magliette?</h2>
+      <p class="sub">Ho selezionato di default quelle che sembrano magliette. Spunta/togli come preferisci — conto solo le entrate (IN) delle categorie scelte.</p>
+      <div class="cat-list" id="catList"></div>
+      <div class="btn-row">
+        <button class="btn ghost" id="backTo1">Indietro</button>
+        <button class="btn red" id="toStep3">Continua →</button>
+      </div>
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="panel" id="panel-3">
+      <h2>Verifica taglie e modelli</h2>
+      <p class="sub">Ho provato a leggere ogni nota da solo. Le righe evidenziate in rosso contengono più magliette insieme (es. "e", numeri multipli) — controllale e, se serve, aggiungi righe separate.</p>
+      <div id="txContainer"></div>
+      <div class="btn-row">
+        <button class="btn ghost" id="backTo2">Indietro</button>
+        <button class="btn red" id="toStep4">Continua →</button>
+      </div>
+    </div>
+
+    <!-- STEP 4 -->
+    <div class="panel" id="panel-4">
+      <h2>Nomi simili da unire?</h2>
+      <p class="sub" id="mergeIntro">Confronto i nomi dei modelli per trovare varianti dello stesso design.</p>
+      <div id="mergeSuggestions"></div>
+      <h3 style="font-size:14px;margin:22px 0 8px;">Tutti i modelli trovati</h3>
+      <table class="final" id="finalNameTable">
+        <thead><tr><th>Nome originale</th><th>Pezzi</th><th>Nome finale (modificabile)</th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <div class="btn-row">
+        <button class="btn ghost" id="backTo3">Indietro</button>
+        <button class="btn secondary" id="saveMappings">💾 Salva queste scelte per la prossima volta</button>
+        <button class="btn red" id="toStep5">Genera report →</button>
+      </div>
+    </div>
+
+    <!-- STEP 5 -->
+    <div class="panel" id="panel-5">
+      <h2>Report vendite magliette</h2>
+      <p class="sub" id="reportSub"></p>
+      <div class="stat-grid" id="statGrid"></div>
+      <div class="two-col">
+        <div class="chart-wrap"><h3>Pezzi venduti per modello</h3><div id="chartModel"></div></div>
+        <div class="chart-wrap"><h3>Distribuzione taglie</h3><div id="chartSize"></div></div>
+      </div>
+      <div class="chart-wrap">
+        <h3>Dettaglio per modello</h3>
+        <table class="final" id="detailTable">
+          <thead><tr><th>Modello</th><th>Pezzi</th><th>Taglie</th><th>Ricavo noto</th><th>Prezzo medio</th><th>Prima · Ultima vendita</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="btn-row">
+        <button class="btn ghost" id="backTo4">Indietro</button>
+        <button class="btn secondary" id="exportCsv">Esporta riepilogo CSV</button>
+        <button class="btn olive" id="restart">Ricomincia con un altro file</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const SIZES = ['xs','s','m','l','xl','xxl','xxxl','2xl','3xl'];
+  const SIZE_ORDER = ['xs','s','m','l','xl','xxl','2xl','3xl','xxxl','?'];
+  const FILLERS = new Set(['maglietta','magliette','maglia']);
+
+  let rawRows = [];
+  let categories = [];      // {id,name,type,count}
+  let selectedCatIds = new Set();
+  let filteredTx = [];      // transactions in selected categories, type IN
+  let txLines = {};         // txId -> [ {qty,design,size,complex,manualAmount} ]
+  let canonicalMap = {};    // normalized raw design -> final canonical name
+  let savedMappings = {};   // loaded from storage
+
+  const el = id => document.getElementById(id);
+
+  function normKey(s){ return (s||'').trim().toLowerCase(); }
+
+  function escapeHtml(s){
+    const d = document.createElement('div');
+    d.textContent = s==null ? '' : String(s);
+    return d.innerHTML;
+  }
+
+  // Minimal RFC4180-style CSV parser (no external dependency), returns an
+  // array of objects keyed by the header row — same shape as Papa.parse
+  // with {header:true, skipEmptyLines:true}.
+  function parseCSV(text){
+    const rows = [];
+    let row = [], field = '', inQuotes = false;
+    let i = 0;
+    const len = text.length;
+    while(i < len){
+      const ch = text[i];
+      if(inQuotes){
+        if(ch === '"'){
+          if(text[i+1] === '"'){ field += '"'; i += 2; continue; }
+          inQuotes = false; i++; continue;
+        }
+        field += ch; i++; continue;
+      } else {
+        if(ch === '"'){ inQuotes = true; i++; continue; }
+        if(ch === ','){ row.push(field); field=''; i++; continue; }
+        if(ch === '\r'){ i++; continue; }
+        if(ch === '\n'){ row.push(field); rows.push(row); row=[]; field=''; i++; continue; }
+        field += ch; i++; continue;
+      }
+    }
+    if(field.length || row.length){ row.push(field); rows.push(row); }
+    while(rows.length && rows[rows.length-1].length===1 && rows[rows.length-1][0]==='') rows.pop();
+    if(!rows.length) return [];
+
+    const headers = rows[0];
+    const data = [];
+    for(let r=1;r<rows.length;r++){
+      const raw = rows[r];
+      if(raw.length===1 && raw[0]==='') continue;
+      const obj = {};
+      headers.forEach((h,idx)=>{ obj[h] = raw[idx]!==undefined ? raw[idx] : ''; });
+      data.push(obj);
+    }
+    return data;
+  }
+
+  // Hand-rolled horizontal bar chart, no dependencies.
+  function renderBarChart(container, labels, values, color){
+    if(!labels.length){ container.innerHTML = '<p style="font-size:13px;color:var(--ink-soft);">Nessun dato.</p>'; return; }
+    const max = Math.max(...values, 1);
+    const barH = 24, gap = 10, svgW = 600;
+    const leftPad = Math.min(200, Math.max(...labels.map(l=>l.length)) * 6.5 + 14);
+    const rightPad = 46;
+    const h = labels.length * (barH+gap) + gap;
+    let svg = `<svg viewBox="0 0 ${svgW} ${h}" width="100%" height="${h}" xmlns="http://www.w3.org/2000/svg">`;
+    labels.forEach((label,i)=>{
+      const y = gap + i*(barH+gap);
+      const w = (values[i]/max) * (svgW-leftPad-rightPad);
+      svg += `<text x="${leftPad-8}" y="${y+barH/2+4}" text-anchor="end" font-size="12" font-family="Work Sans, sans-serif" fill="#17140F">${escapeHtml(label)}</text>`;
+      svg += `<rect x="${leftPad}" y="${y}" width="${Math.max(w,2)}" height="${barH}" fill="${color}" rx="2"/>`;
+      svg += `<text x="${leftPad+w+8}" y="${y+barH/2+4}" font-size="12" font-family="Work Sans, sans-serif" fill="#4a463f">${values[i]}</text>`;
+    });
+    svg += '</svg>';
+    container.innerHTML = svg;
+  }
+
+  // Hand-rolled donut chart, no dependencies.
+  function renderDonutChart(container, labels, values, colors){
+    if(!labels.length){ container.innerHTML = '<p style="font-size:13px;color:var(--ink-soft);">Nessun dato.</p>'; return; }
+    const total = values.reduce((a,b)=>a+b,0) || 1;
+    const cx=100, cy=100, r=72, innerR=42;
+    let angle = -Math.PI/2;
+    let paths = '';
+    labels.forEach((label,i)=>{
+      const frac = values[i]/total;
+      const sweep = frac * Math.PI * 2;
+      const end = angle + sweep;
+      const large = sweep > Math.PI ? 1 : 0;
+      const x1=cx+r*Math.cos(angle), y1=cy+r*Math.sin(angle);
+      const x2=cx+r*Math.cos(end), y2=cy+r*Math.sin(end);
+      const ix1=cx+innerR*Math.cos(angle), iy1=cy+innerR*Math.sin(angle);
+      const ix2=cx+innerR*Math.cos(end), iy2=cy+innerR*Math.sin(end);
+      const color = colors[i % colors.length];
+      if(values[i] > 0){
+        paths += `<path d="M ${x1} ${y1} A ${r} ${r} 0 ${large} 1 ${x2} ${y2} L ${ix2} ${iy2} A ${innerR} ${innerR} 0 ${large} 0 ${ix1} ${iy1} Z" fill="${color}"/>`;
+      }
+      angle = end;
+    });
+    let legend = '<div style="display:flex;flex-wrap:wrap;gap:7px 14px;margin-top:14px;font-size:12px;justify-content:center;">';
+    labels.forEach((label,i)=>{
+      legend += `<span style="display:inline-flex;align-items:center;gap:5px;"><span style="width:10px;height:10px;background:${colors[i%colors.length]};display:inline-block;border-radius:2px;"></span>${escapeHtml(label)} (${values[i]})</span>`;
+    });
+    legend += '</div>';
+    container.innerHTML = `<svg viewBox="0 0 200 200" width="200" height="200" style="display:block;margin:0 auto;">${paths}</svg>${legend}`;
+  }
+
+  function levenshtein(a,b){
+    const m=a.length,n=b.length;
+    const dp=Array.from({length:m+1},()=>new Array(n+1).fill(0));
+    for(let i=0;i<=m;i++) dp[i][0]=i;
+    for(let j=0;j<=n;j++) dp[0][j]=j;
+    for(let i=1;i<=m;i++){
+      for(let j=1;j<=n;j++){
+        dp[i][j] = a[i-1]===b[j-1] ? dp[i-1][j-1] : 1+Math.min(dp[i-1][j],dp[i][j-1],dp[i-1][j-1]);
+      }
+    }
+    return dp[m][n];
+  }
+
+  function parseNote(note){
+    let raw = (note||'').trim();
+    if(!raw){
+      return {qty:1, design:'', size:'', complex:true};
+    }
+    let complex = false;
+    let rest = raw;
+    let qty = 1;
+
+    const leadMatch = rest.match(/^(\d+)\s+/);
+    if(leadMatch){
+      qty = parseInt(leadMatch[1],10);
+      rest = rest.slice(leadMatch[0].length);
+    }
+
+    // composite-line signals
+    const magliettaCount = (rest.match(/maglietta|magliette/gi)||[]).length;
+    if(magliettaCount > 1) complex = true;
+    if(/\be\b/i.test(rest)) complex = true;
+    const extraDigits = rest.match(/\b\d+\b/g);
+    if(extraDigits && extraDigits.length) complex = true;
+
+    const tokens = rest.split(/\s+/).filter(Boolean);
+    let sizeIdx = -1, sizeVal = '';
+    let sizeMatches = 0;
+    tokens.forEach((t,i)=>{
+      const clean = t.toLowerCase().replace(/[^a-z0-9]/g,'');
+      if(SIZES.includes(clean)){
+        sizeMatches++;
+        if(sizeIdx===-1){ sizeIdx=i; sizeVal=clean.toUpperCase(); }
+      }
+    });
+    if(sizeMatches > 1) complex = true;
+
+    const designTokens = tokens.filter((t,i)=>{
+      if(i===sizeIdx) return false;
+      const cleanLower = t.toLowerCase().replace(/[^a-z]/g,'');
+      if(FILLERS.has(cleanLower)) return false;
+      return true;
+    });
+    let design = designTokens.join(' ').trim();
+    if(design) design = design.charAt(0).toUpperCase()+design.slice(1);
+    if(!design){ complex = true; }
+
+    // If the line looks composite (multiple items in one note), never guess a
+    // combined design/size — leave both blank so the user has to split the
+    // line into separate, correctly-named rows instead of getting a fake
+    // merged model like "Palestina e Antifascista".
+    if(complex){
+      return {qty, design:'', size:'', complex};
+    }
+
+    return {qty, design, size: sizeVal, complex};
+  }
+
+  // ---------- STEP NAV ----------
+  function goStep(n){
+    document.querySelectorAll('#ms-app .panel').forEach(p=>p.classList.remove('active'));
+    el('panel-'+n).classList.add('active');
+    document.querySelectorAll('#ms-app .step-tab').forEach(t=>{
+      const s = parseInt(t.dataset.step,10);
+      t.classList.remove('active','done');
+      if(s===n) t.classList.add('active');
+      else if(s<n) t.classList.add('done');
+    });
+    if(n===5) renderReport();
+  }
+
+  // ---------- STEP 1: upload ----------
+  const dz = el('dropzone');
+  const fileInput = el('fileInput');
+  dz.addEventListener('click', ()=>fileInput.click());
+  dz.addEventListener('dragover', e=>{e.preventDefault(); dz.classList.add('drag');});
+  dz.addEventListener('dragleave', ()=>dz.classList.remove('drag'));
+  dz.addEventListener('drop', e=>{
+    e.preventDefault(); dz.classList.remove('drag');
+    if(e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
+  });
+  fileInput.addEventListener('change', e=>{
+    if(e.target.files.length) handleFile(e.target.files[0]);
+  });
+
+  function handleFile(file){
+    el('fileError').style.display='none';
+    const reader = new FileReader();
+    reader.onload = function(e){
+      const data = parseCSV(e.target.result);
+      if(!data.length){
+        el('fileError').textContent = 'Non riesco a leggere questo file. È il CSV esportato da Sossoldi?';
+        el('fileError').style.display='block';
+        return;
+      }
+      rawRows = data;
+      buildCategories();
+      goStep(2);
+    };
+    reader.readAsText(file);
+  }
+
+  function buildCategories(){
+    const map = {};
+    rawRows.forEach(r=>{
+      if(r.table_name==='categoryTransaction' && r.type==='IN'){
+        map[r.id] = {id:r.id, name:r.name, type:r.type};
+      }
+    });
+    Object.values(map).forEach(c=>{
+      c.count = rawRows.filter(r=>r.table_name==='transaction' && r.type==='IN' && String(r.idCategory)===String(c.id)).length;
+    });
+    categories = Object.values(map).sort((a,b)=>b.count-a.count);
+    renderCategories();
+  }
+
+  function renderCategories(){
+    const list = el('catList');
+    list.innerHTML = '';
+    categories.forEach(c=>{
+      const checked = /maglia/i.test(c.name);
+      const div = document.createElement('label');
+      div.className='cat-item';
+      div.innerHTML = `<input type="checkbox" data-id="${c.id}" ${checked?'checked':''}>
+        <span class="name">${c.name}</span>
+        <span class="meta">${c.count} entrate</span>`;
+      list.appendChild(div);
+    });
+  }
+
+  el('backTo1').addEventListener('click', ()=>goStep(1));
+  el('toStep3').addEventListener('click', ()=>{
+    selectedCatIds = new Set(
+      Array.from(document.querySelectorAll('#catList input:checked')).map(i=>i.dataset.id)
+    );
+    buildFilteredTransactions();
+    goStep(3);
+  });
+
+  // ---------- STEP 2 -> filter transactions ----------
+  function buildFilteredTransactions(){
+    filteredTx = rawRows.filter(r =>
+      r.table_name==='transaction' && r.type==='IN' && selectedCatIds.has(String(r.idCategory))
+    );
+    txLines = {};
+    filteredTx.forEach(tx=>{
+      const p = parseNote(tx.note);
+      txLines[tx.id] = [{ qty:p.qty, design:p.design, size:p.size, complex:p.complex, manualAmount:null }];
+    });
+    renderTxTable();
+  }
+
+  function renderTxTable(){
+    const container = el('txContainer');
+    container.innerHTML = '';
+    filteredTx
+      .slice()
+      .sort((a,b)=> new Date(a.date) - new Date(b.date))
+      .forEach(tx=>{
+        const lines = txLines[tx.id];
+        const group = document.createElement('div');
+        group.className = 'txgroup' + (lines.length>1 ? ' multi' : '');
+        group.dataset.txid = tx.id;
+
+        const dateStr = (tx.date||'').slice(0,10);
+        group.innerHTML = `
+          <div class="txhead">
+            <span><strong>${dateStr}</strong> — <span class="note">"${(tx.note||'').trim()}"</span></span>
+            <span class="amt">€ ${parseFloat(tx.amount).toFixed(2)}</span>
+          </div>
+          <div class="lines"></div>
+          <div class="txfoot"><button class="linklink" data-action="add">+ Aggiungi riga (più modelli in questa vendita)</button></div>
+        `;
+        container.appendChild(group);
+        renderLines(group, tx);
+      });
+
+    container.querySelectorAll('.linklink[data-action=add]').forEach(btn=>{
+      btn.addEventListener('click', e=>{
+        const group = e.target.closest('.txgroup');
+        const txid = group.dataset.txid;
+        txLines[txid].push({qty:1, design:'', size:'', complex:false, manualAmount:null});
+        const tx = filteredTx.find(t=>String(t.id)===String(txid));
+        group.classList.add('multi');
+        renderLines(group, tx);
+      });
+    });
+  }
+
+  function renderLines(group, tx){
+    const wrap = group.querySelector('.lines');
+    const lines = txLines[tx.id];
+    const multi = lines.length>1;
+    group.classList.toggle('multi', multi);
+    wrap.innerHTML = '';
+    lines.forEach((line, idx)=>{
+      const row = document.createElement('div');
+      row.className = 'itemline' + (line.complex ? ' flag' : '');
+      const sizeOptions = ['','xs','s','m','l','xl','xxl','2xl','3xl'].map(s=>
+        `<option value="${s}" ${line.size.toLowerCase()===s?'selected':''}>${s? s.toUpperCase():'—'}</option>`
+      ).join('');
+      row.innerHTML = `
+        ${line.complex ? '<div class="flagtag">⚠ questa nota sembra contenere più modelli o informazioni: inserisci tu modello e taglia, dividendo in più righe con "+ Aggiungi riga" se necessario</div>' : ''}
+        <input type="number" min="1" class="qty" value="${line.qty}" title="Quantità">
+        <input type="text" class="design" value="${line.design}" placeholder="Nome modello">
+        <select class="size">${sizeOptions}</select>
+        <input type="number" step="0.01" class="amtcol amount" placeholder="€ (facolt.)" value="${line.manualAmount ?? ''}">
+        <span>${idx>0 ? '<button class="rm">✕</button>' : ''}</span>
+      `;
+      row.querySelector('.qty').addEventListener('input', e=> line.qty = parseInt(e.target.value||'1',10));
+      row.querySelector('.design').addEventListener('input', e=> line.design = e.target.value);
+      row.querySelector('.size').addEventListener('change', e=> line.size = e.target.value.toUpperCase());
+      const amtInput = row.querySelector('.amount');
+      if(amtInput) amtInput.addEventListener('input', e=> line.manualAmount = e.target.value==='' ? null : parseFloat(e.target.value));
+      const rmBtn = row.querySelector('.rm');
+      if(rmBtn) rmBtn.addEventListener('click', ()=>{
+        lines.splice(idx,1);
+        renderLines(group, tx);
+      });
+      wrap.appendChild(row);
+    });
+  }
+
+  el('backTo2').addEventListener('click', ()=>goStep(2));
+  el('toStep4').addEventListener('click', ()=>{
+    loadSavedMappings();
+    buildMergeStep();
+    goStep(4);
+  });
+
+  // ---------- STEP 4: merge suggestions ----------
+  async function loadSavedMappings(){
+    savedMappings = {};
+    try{
+      const res = await window.storage.get('shirt-design-mappings', false);
+      if(res && res.value){ savedMappings = JSON.parse(res.value); }
+    }catch(e){ /* no saved mappings yet */ }
+  }
+
+  function allDesignEntries(){
+    const map = {};
+    Object.values(txLines).flat().forEach(line=>{
+      const key = normKey(line.design);
+      if(!key) return;
+      if(!map[key]) map[key] = {key, label:line.design, qty:0};
+      map[key].qty += (line.qty||0);
+      // prefer the longer / more descriptive label as display default
+      if(line.design.length > map[key].label.length) map[key].label = line.design;
+    });
+    return Object.values(map).sort((a,b)=>b.qty-a.qty);
+  }
+
+  let mergeResolutions = {}; // key -> canonical label
+
+  function buildMergeStep(){
+    const entries = allDesignEntries();
+    mergeResolutions = {};
+    entries.forEach(e=>{
+      mergeResolutions[e.key] = savedMappings[e.key] || e.label;
+    });
+
+    // suggest pairs among entries NOT already covered by a saved mapping
+    const unresolved = entries.filter(e=>!savedMappings[e.key]);
+    const suggestions = [];
+    const used = new Set();
+    for(let i=0;i<unresolved.length;i++){
+      for(let j=i+1;j<unresolved.length;j++){
+        const a = unresolved[i], b = unresolved[j];
+        if(used.has(a.key) || used.has(b.key)) continue;
+        const ka=a.key, kb=b.key;
+        const substr = ka.includes(kb) || kb.includes(ka);
+        const close = levenshtein(ka,kb) <= 2 && Math.min(ka.length,kb.length) > 3;
+        if(substr || close){
+          suggestions.push({a,b});
+          used.add(a.key); used.add(b.key);
+        }
+      }
+    }
+
+    const sugWrap = el('mergeSuggestions');
+    sugWrap.innerHTML = '';
+    el('mergeIntro').textContent = suggestions.length
+      ? `Ho trovato ${suggestions.length} coppia/e di nomi che potrebbero essere lo stesso modello.`
+      : 'Non ho trovato nomi sospettosamente simili — controlla comunque la lista sotto.';
+
+    suggestions.forEach((pair,i)=>{
+      const card = document.createElement('div');
+      card.className = 'merge-card';
+      const winner = pair.a.qty >= pair.b.qty ? pair.a : pair.b;
+      card.innerHTML = `
+        <p>«<span class="names">${pair.a.label}</span>» (${pair.a.qty} pezzi) sembra simile a «<span class="names">${pair.b.label}</span>» (${pair.b.qty} pezzi). Vuoi unirli?</p>
+        <div class="merge-actions">
+          <button class="btn olive merge-yes">Sì, unisci</button>
+          <button class="btn ghost merge-no">No, tieni separati</button>
+          <input type="text" class="merge-name" value="${winner.label}" style="display:none;">
+        </div>
+      `;
+      const yesBtn = card.querySelector('.merge-yes');
+      const noBtn = card.querySelector('.merge-no');
+      const nameInput = card.querySelector('.merge-name');
+      yesBtn.addEventListener('click', ()=>{
+        nameInput.style.display='inline-block';
+        mergeResolutions[pair.a.key] = nameInput.value;
+        mergeResolutions[pair.b.key] = nameInput.value;
+        card.classList.add('resolved');
+        renderFinalTable(entries);
+      });
+      nameInput.addEventListener('input', ()=>{
+        mergeResolutions[pair.a.key] = nameInput.value;
+        mergeResolutions[pair.b.key] = nameInput.value;
+        renderFinalTable(entries);
+      });
+      noBtn.addEventListener('click', ()=>{
+        card.classList.add('resolved');
+      });
+      sugWrap.appendChild(card);
+    });
+
+    renderFinalTable(entries);
+  }
+
+  function renderFinalTable(entries){
+    const tbody = document.querySelector('#finalNameTable tbody');
+    tbody.innerHTML = '';
+    entries.forEach(e=>{
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${e.label}</td>
+        <td>${e.qty}</td>
+        <td><input type="text" data-key="${e.key}" value="${mergeResolutions[e.key]}"></td>
+      `;
+      tr.querySelector('input').addEventListener('input', ev=>{
+        mergeResolutions[e.key] = ev.target.value;
+      });
+      tbody.appendChild(tr);
+    });
+  }
+
+  el('backTo3').addEventListener('click', ()=>goStep(3));
+  el('saveMappings').addEventListener('click', async ()=>{
+    const merged = Object.assign({}, savedMappings, mergeResolutions);
+    try{
+      await window.storage.set('shirt-design-mappings', JSON.stringify(merged), false);
+      el('saveMappings').textContent = '✓ Salvato';
+      setTimeout(()=> el('saveMappings').textContent = '💾 Salva queste scelte per la prossima volta', 1800);
+    }catch(e){
+      el('saveMappings').textContent = 'Errore nel salvataggio';
+    }
+  });
+  el('toStep5').addEventListener('click', ()=> goStep(5));
+  el('backTo4').addEventListener('click', ()=>goStep(4));
+
+  // ---------- STEP 5: report ----------
+
+  function canonicalOf(design){
+    const key = normKey(design);
+    return mergeResolutions[key] || design || '(senza nome)';
+  }
+
+  function renderReport(){
+    const perDesign = {};
+    let totalQty = 0;
+    let totalRevenueAuthoritative = 0;
+    let sizeTotals = {};
+
+    filteredTx.forEach(tx=> totalRevenueAuthoritative += parseFloat(tx.amount||0));
+
+    filteredTx.forEach(tx=>{
+      const lines = txLines[tx.id];
+      const single = lines.length===1;
+      lines.forEach(line=>{
+        const name = canonicalOf(line.design);
+        if(!perDesign[name]) perDesign[name] = {qty:0, revenue:0, revenueQty:0, sizes:{}, dates:[]};
+        const d = perDesign[name];
+        d.qty += line.qty;
+        totalQty += line.qty;
+        const sizeKey = line.size ? line.size.toLowerCase() : '?';
+        d.sizes[sizeKey] = (d.sizes[sizeKey]||0) + line.qty;
+        sizeTotals[sizeKey] = (sizeTotals[sizeKey]||0) + line.qty;
+        d.dates.push(tx.date);
+
+        let rev = null;
+        if(single) rev = parseFloat(tx.amount||0);
+        else if(line.manualAmount!=null) rev = line.manualAmount;
+        if(rev!=null){ d.revenue += rev; d.revenueQty += line.qty; }
+      });
+    });
+
+    const designs = Object.entries(perDesign).sort((a,b)=>b[1].qty-a[1].qty);
+    const topDesign = designs[0];
+    const topSize = Object.entries(sizeTotals).sort((a,b)=>b[1]-a[1])[0];
+    const avgPriceOverall = totalQty ? (totalRevenueAuthoritative/totalQty) : 0;
+
+    el('reportSub').textContent = `${filteredTx.length} vendite registrate, ${designs.length} modelli distinti.`;
+
+    el('statGrid').innerHTML = `
+      <div class="stat accent"><div class="num">${totalQty}</div><div class="lbl">Magliette vendute</div></div>
+      <div class="stat"><div class="num">€ ${totalRevenueAuthoritative.toFixed(2)}</div><div class="lbl">Ricavo totale</div></div>
+      <div class="stat"><div class="num">€ ${avgPriceOverall.toFixed(2)}</div><div class="lbl">Prezzo medio a pezzo</div></div>
+      <div class="stat"><div class="num">${topDesign?topDesign[0]:'—'}</div><div class="lbl">Modello più venduto (${topDesign?topDesign[1].qty:0} pz)</div></div>
+      <div class="stat"><div class="num">${topSize?topSize[0].toUpperCase():'—'}</div><div class="lbl">Taglia più venduta</div></div>
+    `;
+
+    const detailBody = document.querySelector('#detailTable tbody');
+    detailBody.innerHTML = '';
+    designs.forEach(([name,d])=>{
+      const sizesStr = SIZE_ORDER.filter(s=>d.sizes[s]).map(s=>`${s==='?'?'n/d':s.toUpperCase()}:${d.sizes[s]}`).join(' · ');
+      const avgP = d.revenueQty ? (d.revenue/d.revenueQty) : null;
+      const dates = d.dates.map(x=>new Date(x)).sort((a,b)=>a-b);
+      const first = dates[0] ? dates[0].toISOString().slice(0,10) : '—';
+      const last = dates[dates.length-1] ? dates[dates.length-1].toISOString().slice(0,10) : '—';
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${name}</td>
+        <td>${d.qty}</td>
+        <td>${sizesStr||'—'}</td>
+        <td>${d.revenueQty ? '€ '+d.revenue.toFixed(2)+(d.revenueQty<d.qty?' (parziale)':'') : '—'}</td>
+        <td>${avgP!=null ? '€ '+avgP.toFixed(2) : '—'}</td>
+        <td>${first} · ${last}</td>
+      `;
+      detailBody.appendChild(tr);
+    });
+
+    window.__msReportData = designs;
+
+    // charts (hand-rolled SVG, no external dependency)
+    renderBarChart(el('chartModel'), designs.map(d=>d[0]), designs.map(d=>d[1].qty), '#C4272A');
+
+    const sizeLabelsSorted = SIZE_ORDER.filter(s=>sizeTotals[s]!=null);
+    renderDonutChart(
+      el('chartSize'),
+      sizeLabelsSorted.map(s=>s==='?'?'Non specificata':s.toUpperCase()),
+      sizeLabelsSorted.map(s=>sizeTotals[s]),
+      ['#C4272A','#4B5D3A','#17140F','#9a927e','#e8b4a0','#8fa876','#d9cfa6','#6b6152','#b23b3e']
+    );
+  }
+
+  el('exportCsv').addEventListener('click', ()=>{
+    const designs = window.__msReportData || [];
+    let csv = 'Modello,Pezzi,Taglie,Ricavo noto,Prezzo medio,Prima vendita,Ultima vendita\n';
+    designs.forEach(([name,d])=>{
+      const sizesStr = SIZE_ORDER.filter(s=>d.sizes[s]).map(s=>`${s.toUpperCase()}:${d.sizes[s]}`).join(' ');
+      const avgP = d.revenueQty ? (d.revenue/d.revenueQty) : '';
+      const dates = d.dates.map(x=>new Date(x)).sort((a,b)=>a-b);
+      const first = dates[0] ? dates[0].toISOString().slice(0,10) : '';
+      const last = dates[dates.length-1] ? dates[dates.length-1].toISOString().slice(0,10) : '';
+      csv += `"${name}",${d.qty},"${sizesStr}",${d.revenue.toFixed(2)},${avgP?avgP.toFixed(2):''},${first},${last}\n`;
+    });
+    const blob = new Blob([csv], {type:'text/csv'});
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'riepilogo_magliette.csv';
+    link.click();
+  });
+
+  el('restart').addEventListener('click', ()=>{
+    rawRows=[]; categories=[]; selectedCatIds=new Set(); filteredTx=[]; txLines={};
+    fileInput.value='';
+    goStep(1);
+  });
+
+})();
+</script>
