@@ -4,8 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <title>Conta magliette</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
   html,body{margin:0;padding:0;height:100%;overflow-x:hidden;-webkit-text-size-adjust:100%;text-size-adjust:100%;}
@@ -25,7 +23,7 @@
   #ms-app{
     background:var(--paper);
     color:var(--ink);
-    font-family:'Work Sans',sans-serif;
+    font-family:Arial,sans-serif;
     padding:32px 20px 60px;
     min-height:100%;
     line-height:1.45;
@@ -49,12 +47,12 @@
     border-bottom:3px solid var(--ink);
   }
   #ms-app .masthead h1{
-    font-family:'Archivo Black',sans-serif;
+    font-family:Arial,sans-serif;
     font-size:clamp(24px,7vw,42px);
     line-height:1.05;
     margin:0 0 10px;
     letter-spacing:-0.01em;
-    font-weight: bold;
+    font-weight:700;
   }
   #ms-app .masthead p{
     margin:0;
@@ -75,7 +73,7 @@
     min-width:96px;
     padding:12px 10px;
     font-size:12.5px;
-    font-weight:600;
+    font-weight:500;
     color:var(--ink-soft);
     text-align:center;
     border-right:1px solid var(--line);
@@ -96,13 +94,16 @@
   #ms-app .panel.active{display:block;}
 
   #ms-app h2{
-    font-family:'Archivo Black',sans-serif;
+    font-family:Arial,sans-serif;
     font-size:20px;
+    font-weight:600;
     margin:0 0 6px;
   }
   #ms-app .sub{color:var(--ink-soft);font-size:14px;margin:0 0 22px;max-width:64ch;}
 
   #ms-app .drop{
+    display:block;
+    width:100%;
     border:2px dashed var(--line);
     border-radius:var(--radius);
     padding:44px 20px;
@@ -114,12 +115,12 @@
     border-color:var(--red);
     background:var(--red-dim);
   }
-  #ms-app .drop strong{display:block;font-size:16px;margin-bottom:4px;}
+  #ms-app .drop strong{display:block;font-size:16px;font-weight:600;margin-bottom:4px;}
   #ms-app .drop span{font-size:13px;color:var(--ink-soft);}
-  #ms-app input[type=file]{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;}
+  #ms-app input[type=file]{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;}
 
   #ms-app .btn{
-    font-family:'Work Sans',sans-serif;
+    font-family:Arial,sans-serif;
     font-weight:600;
     font-size:14px;
     padding:11px 20px;
@@ -170,7 +171,7 @@
   #ms-app .itemline:first-of-type{border-top:none;}
   #ms-app .itemline.flag{background:var(--red-dim);}
   #ms-app .itemline input, #ms-app .itemline select{
-    font-family:'Work Sans',sans-serif;
+    font-family:Arial,sans-serif;
     font-size:13.5px;padding:6px 8px;border:1px solid var(--line);border-radius:var(--radius);
     width:100%;background:#fff;color:var(--ink);
   }
@@ -190,7 +191,7 @@
   #ms-app .merge-card .names{font-weight:700;}
   #ms-app .merge-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
   #ms-app .merge-actions input{
-    font-family:'Work Sans',sans-serif;padding:7px 9px;border:1px solid var(--line);
+    font-family:Arial,sans-serif;padding:7px 9px;border:1px solid var(--line);
     border-radius:var(--radius);font-size:13.5px;min-width:160px;flex:1 1 160px;
   }
   #ms-app .merge-card.resolved{opacity:.55;}
@@ -214,7 +215,7 @@
   }
   #ms-app .period-filter label{display:flex;align-items:center;gap:6px;font-weight:600;color:var(--ink-soft);flex-wrap:wrap;}
   #ms-app .period-filter input[type=date]{
-    font-family:'Work Sans',sans-serif;padding:6px 8px;border:1px solid var(--line);
+    font-family:Arial,sans-serif;padding:6px 8px;border:1px solid var(--line);
     border-radius:var(--radius);font-size:13.5px;color:var(--ink);max-width:100%;
   }
 
@@ -222,7 +223,7 @@
   #ms-app .stat{
     background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:16px;
   }
-  #ms-app .stat .num{font-family:'Archivo Black',sans-serif;font-size:24px;line-height:1.1;margin-bottom:4px;word-break:break-word;}
+  #ms-app .stat .num{font-family:Arial,sans-serif;font-size:24px;line-height:1.1;margin-bottom:4px;word-break:break-word;}
   #ms-app .stat .lbl{font-size:12.5px;color:var(--ink-soft);}
   #ms-app .stat.accent{background:var(--ink);color:var(--paper);}
   #ms-app .stat.accent .lbl{color:#A9B6CC;}
