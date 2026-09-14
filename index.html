@@ -4,7 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <title>Conta magliette</title>
-
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
   html,body{margin:0;padding:0;height:100%;overflow-x:hidden;-webkit-text-size-adjust:100%;text-size-adjust:100%;}
@@ -24,7 +25,7 @@
   #ms-app{
     background:var(--paper);
     color:var(--ink);
-    font-family:Roboto,Arial,sans-serif;
+    font-family:'Work Sans',sans-serif;
     padding:32px 20px 60px;
     min-height:100%;
     line-height:1.45;
@@ -36,7 +37,11 @@
     color:var(--ink);
     border-radius:10px;
     border:2px solid var(--ink);
-    box-shadow:0 4px 16px -4px rgba(22,35,63,.25);
+    box-shadow:
+      0 1px 0 rgba(22,35,63,.08),
+      0 8px 0 -4px rgba(22,35,63,.03),
+      0 24px 56px -18px rgba(22,35,63,.35),
+      0 4px 16px -4px rgba(22,35,63,.18);
     overflow:hidden;
   }
   #ms-app .masthead{
@@ -44,12 +49,12 @@
     border-bottom:3px solid var(--ink);
   }
   #ms-app .masthead h1{
-    font-family:Roboto,Arial,sans-serif;
+    font-family:'Archivo Black',sans-serif;
     font-size:clamp(24px,7vw,42px);
     line-height:1.05;
     margin:0 0 10px;
     letter-spacing:-0.01em;
-    font-weight:700;
+    font-weight: bold;
   }
   #ms-app .masthead p{
     margin:0;
@@ -91,10 +96,9 @@
   #ms-app .panel.active{display:block;}
 
   #ms-app h2{
-    font-family:Roboto,Arial,sans-serif;
+    font-family:'Archivo Black',sans-serif;
     font-size:20px;
     margin:0 0 6px;
-    font-weight:700;
   }
   #ms-app .sub{color:var(--ink-soft);font-size:14px;margin:0 0 22px;max-width:64ch;}
 
@@ -112,10 +116,10 @@
   }
   #ms-app .drop strong{display:block;font-size:16px;margin-bottom:4px;}
   #ms-app .drop span{font-size:13px;color:var(--ink-soft);}
-  #ms-app input[type=file]{display:none;}
+  #ms-app input[type=file]{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;}
 
   #ms-app .btn{
-    font-family:Roboto,Arial,sans-serif;
+    font-family:'Work Sans',sans-serif;
     font-weight:600;
     font-size:14px;
     padding:11px 20px;
@@ -124,9 +128,9 @@
     background:var(--ink);
     color:var(--paper);
     cursor:pointer;
-    transition:none;
+    transition:transform .08s ease;
   }
-  #ms-app .btn:hover{transform:none;}
+  #ms-app .btn:hover{transform:translateY(-1px);}
   #ms-app .btn:active{transform:translateY(0);}
   #ms-app .btn.secondary{background:transparent;color:var(--ink);}
   #ms-app .btn.ghost{background:transparent;color:var(--ink-soft);border-color:var(--line);font-weight:500;}
@@ -166,7 +170,7 @@
   #ms-app .itemline:first-of-type{border-top:none;}
   #ms-app .itemline.flag{background:var(--red-dim);}
   #ms-app .itemline input, #ms-app .itemline select{
-    font-family:Roboto,Arial,sans-serif;
+    font-family:'Work Sans',sans-serif;
     font-size:13.5px;padding:6px 8px;border:1px solid var(--line);border-radius:var(--radius);
     width:100%;background:#fff;color:var(--ink);
   }
@@ -186,7 +190,7 @@
   #ms-app .merge-card .names{font-weight:700;}
   #ms-app .merge-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
   #ms-app .merge-actions input{
-    font-family:Roboto,Arial,sans-serif;padding:7px 9px;border:1px solid var(--line);
+    font-family:'Work Sans',sans-serif;padding:7px 9px;border:1px solid var(--line);
     border-radius:var(--radius);font-size:13.5px;min-width:160px;flex:1 1 160px;
   }
   #ms-app .merge-card.resolved{opacity:.55;}
@@ -210,7 +214,7 @@
   }
   #ms-app .period-filter label{display:flex;align-items:center;gap:6px;font-weight:600;color:var(--ink-soft);flex-wrap:wrap;}
   #ms-app .period-filter input[type=date]{
-    font-family:Roboto,Arial,sans-serif;padding:6px 8px;border:1px solid var(--line);
+    font-family:'Work Sans',sans-serif;padding:6px 8px;border:1px solid var(--line);
     border-radius:var(--radius);font-size:13.5px;color:var(--ink);max-width:100%;
   }
 
@@ -218,7 +222,7 @@
   #ms-app .stat{
     background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:16px;
   }
-  #ms-app .stat .num{font-family:Roboto,Arial,sans-serif;font-size:24px;line-height:1.1;margin-bottom:4px;word-break:break-word;}
+  #ms-app .stat .num{font-family:'Archivo Black',sans-serif;font-size:24px;line-height:1.1;margin-bottom:4px;word-break:break-word;}
   #ms-app .stat .lbl{font-size:12.5px;color:var(--ink-soft);}
   #ms-app .stat.accent{background:var(--ink);color:var(--paper);}
   #ms-app .stat.accent .lbl{color:#A9B6CC;}
@@ -323,10 +327,10 @@
     <div class="panel active" id="panel-1">
       <h2>Carica l'export</h2>
       <p class="sub">Dalla app: Impostazioni → Esporta dati (CSV). Qui dentro resta solo nel tuo browser, non viene inviato da nessuna parte.</p>
-      <div class="drop" id="dropzone">
+      <label class="drop" id="dropzone" for="fileInput">
         <strong>Trascina qui il file CSV</strong>
         <span>oppure tocca per sceglierlo dal telefono/computer</span>
-      </div>
+      </label>
       <input type="file" id="fileInput" accept=".csv">
       <p id="fileError" class="sub" style="color:var(--red);display:none;"></p>
     </div>
@@ -622,7 +626,6 @@
   // ---------- STEP 1: upload ----------
   const dz = el('dropzone');
   const fileInput = el('fileInput');
-  dz.addEventListener('click', ()=>fileInput.click());
   dz.addEventListener('dragover', e=>{e.preventDefault(); dz.classList.add('drag');});
   dz.addEventListener('dragleave', ()=>dz.classList.remove('drag'));
   dz.addEventListener('drop', e=>{
