@@ -8,7 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
-  html,body{margin:0;padding:0;-webkit-text-size-adjust:100%;text-size-adjust:100%;}
+  html,body{margin:0;padding:0;height:100%;-webkit-text-size-adjust:100%;text-size-adjust:100%;}
   :root{
     --ink:#16233F;
     --ink-soft:#5C6B85;
@@ -23,7 +23,7 @@
   }
   *{box-sizing:border-box;}
   #ms-app{
-    background:#fff;
+    background:var(--paper);
     color:var(--ink);
     font-family:'Work Sans',sans-serif;
     padding:32px 20px 60px;
@@ -245,8 +245,9 @@
 
   /* ---------- MOBILE ---------- */
   @media(max-width:640px){
-    #ms-app{padding:0 0 40px;}
-    #ms-app .sheet{border-radius:0;border-left:none;border-right:none;max-width:100%;box-shadow:none;}
+    #ms-app{padding:0;min-height:100vh;}
+    #ms-app .sheet{border-radius:0;max-width:100%;box-shadow:none;min-height:100vh;display:flex;flex-direction:column;}
+    #ms-app .sheet .panel.active{flex:1 1 auto;}
     #ms-app .masthead{padding:20px 16px 16px;}
     #ms-app .panel{padding:18px 16px 30px;}
     #ms-app .sub{font-size:13.5px;line-height:1.5;}
