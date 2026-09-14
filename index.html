@@ -125,6 +125,7 @@
   #ms-app .btn:active{transform:translateY(0);}
   #ms-app .btn.secondary{background:transparent;color:var(--ink);}
   #ms-app .btn.ghost{background:transparent;color:var(--ink-soft);border-color:var(--line);font-weight:500;}
+  #ms-app .btn.ghost.active{background:var(--olive);color:#fff;border-color:var(--olive);font-weight:600;}
   #ms-app .btn.red{background:var(--red);border-color:var(--red);}
   #ms-app .btn.olive{background:var(--olive);border-color:var(--olive);}
   #ms-app .btn:disabled{opacity:.4;cursor:not-allowed;transform:none;}
@@ -262,6 +263,15 @@
       <h2>Quali categorie sono vendite di magliette?</h2>
       <p class="sub">Ho selezionato di default quelle che sembrano magliette. Spunta/togli come preferisci — conto solo le entrate (IN) delle categorie scelte.</p>
       <div class="cat-list" id="catList"></div>
+
+      <h2 style="margin-top:26px;">Quale periodo vuoi analizzare?</h2>
+      <p class="sub">Lascia vuoto per includere tutte le date disponibili nel file.</p>
+      <div class="period-filter">
+        <label>Da <input type="date" id="periodFrom"></label>
+        <label>A <input type="date" id="periodTo"></label>
+        <button class="btn ghost" id="clearPeriod2" type="button">Tutto il periodo</button>
+      </div>
+
       <div class="btn-row">
         <button class="btn ghost" id="backTo1">Indietro</button>
         <button class="btn red" id="toStep3">Continua →</button>
@@ -583,7 +593,20 @@
     });
   }
 
+  function updatePeriodBtn(fromId, toId, btnId){
+    const active = !el(fromId).value && !el(toId).value;
+    el(btnId).classList.toggle('active', active);
+  }
+
   el('backTo1').addEventListener('click', ()=>goStep(1));
+  el('clearPeriod2').addEventListener('click', ()=>{
+    el('periodFrom').value=''; el('periodTo').value='';
+    updatePeriodBtn('periodFrom','periodTo','clearPeriod2');
+  });
+  el('periodFrom').addEventListener('change', ()=>updatePeriodBtn('periodFrom','periodTo','clearPeriod2'));
+  el('periodTo').addEventListener('change', ()=>updatePeriodBtn('periodFrom','periodTo','clearPeriod2'));
+  updatePeriodBtn('periodFrom','periodTo','clearPeriod2');
+
   el('toStep3').addEventListener('click', ()=>{
     selectedCatIds = new Set(
       Array.from(document.querySelectorAll('#catList input:checked')).map(i=>i.dataset.id)
@@ -594,14 +617,25 @@
 
   // ---------- STEP 2 -> filter transactions ----------
   function buildFilteredTransactions(){
-    filteredTx = rawRows.filter(r =>
-      r.table_name==='transaction' && r.type==='IN' && selectedCatIds.has(String(r.idCategory))
-    );
+    const from = el('periodFrom').value;
+    const to = el('periodTo').value;
+    filteredTx = rawRows.filter(r => {
+      if(r.table_name!=='transaction' || r.type!=='IN') return false;
+      if(!selectedCatIds.has(String(r.idCategory))) return false;
+      const d = (r.date||'').slice(0,10);
+      if(from && d < from) return false;
+      if(to && d > to) return false;
+      return true;
+    });
     txLines = {};
     filteredTx.forEach(tx=>{
       const p = parseNote(tx.note);
       txLines[tx.id] = [{ qty:p.qty, design:p.design, size:p.size, complex:p.complex, manualAmount:null }];
     });
+    // pre-fill the same period on the report step, still adjustable there
+    el('dateFrom').value = from;
+    el('dateTo').value = to;
+    updatePeriodBtn('dateFrom','dateTo','clearDates');
     renderTxTable();
   }
 
@@ -804,10 +838,17 @@
   });
   el('toStep5').addEventListener('click', ()=> goStep(5));
   el('backTo4').addEventListener('click', ()=>goStep(4));
-  el('dateFrom').addEventListener('change', renderReport);
-  el('dateTo').addEventListener('change', renderReport);
+  el('dateFrom').addEventListener('change', ()=>{
+    updatePeriodBtn('dateFrom','dateTo','clearDates');
+    renderReport();
+  });
+  el('dateTo').addEventListener('change', ()=>{
+    updatePeriodBtn('dateFrom','dateTo','clearDates');
+    renderReport();
+  });
   el('clearDates').addEventListener('click', ()=>{
     el('dateFrom').value=''; el('dateTo').value='';
+    updatePeriodBtn('dateFrom','dateTo','clearDates');
     renderReport();
   });
 
@@ -933,6 +974,10 @@
   el('restart').addEventListener('click', ()=>{
     rawRows=[]; categories=[]; selectedCatIds=new Set(); filteredTx=[]; txLines={};
     fileInput.value='';
+    el('periodFrom').value=''; el('periodTo').value='';
+    el('dateFrom').value=''; el('dateTo').value='';
+    updatePeriodBtn('periodFrom','periodTo','clearPeriod2');
+    updatePeriodBtn('dateFrom','dateTo','clearDates');
     goStep(1);
   });
 
