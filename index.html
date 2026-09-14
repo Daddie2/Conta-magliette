@@ -8,7 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
-  html,body{margin:0;padding:0;}
+  html,body{margin:0;padding:0;-webkit-text-size-adjust:100%;text-size-adjust:100%;}
   :root{
     --ink:#16233F;
     --ink-soft:#5C6B85;
@@ -245,10 +245,12 @@
 
   /* ---------- MOBILE ---------- */
   @media(max-width:640px){
-    #ms-app{padding:14px 8px 40px;}
-    #ms-app .sheet{border-radius:8px;}
-    #ms-app .masthead{padding:22px 18px 18px;}
-    #ms-app .panel{padding:20px 16px 30px;}
+    #ms-app{padding:0 0 40px;}
+    #ms-app .sheet{border-radius:0;border-left:none;border-right:none;max-width:100%;box-shadow:none;}
+    #ms-app .masthead{padding:20px 16px 16px;}
+    #ms-app .panel{padding:18px 16px 30px;}
+    #ms-app .sub{font-size:13.5px;line-height:1.5;}
+    #ms-app .drop span, #ms-app .cat-item .meta{font-size:13px;}
     #ms-app .step-tab{min-width:78px;font-size:10.5px;padding:9px 5px;}
     #ms-app .step-tab .num{width:16px;height:16px;font-size:10px;line-height:16px;margin-right:4px;}
     #ms-app .drop{padding:30px 14px;}
@@ -408,8 +410,16 @@
   let txLines = {};         // txId -> [ {qty,design,size,complex,manualAmount} ]
   let canonicalMap = {};    // normalized raw design -> final canonical name
   let savedMappings = {};   // loaded from storage
+  let fileDateBounds = {min:'', max:''};   // earliest/latest date found in the whole file
+  let reportDateBounds = {min:'', max:''}; // earliest/latest date within the currently filtered transactions
 
   const el = id => document.getElementById(id);
+
+  function dateBoundsOf(rows, dateField){
+    const dates = rows.map(r => (r[dateField]||'').slice(0,10)).filter(Boolean).sort();
+    if(!dates.length) return {min:'', max:''};
+    return {min: dates[0], max: dates[dates.length-1]};
+  }
 
   function normKey(s){ return (s||'').trim().toLowerCase(); }
 
@@ -636,6 +646,11 @@
     });
     categories = Object.values(map).sort((a,b)=>b.count-a.count);
     renderCategories();
+
+    fileDateBounds = dateBoundsOf(rawRows.filter(r=>r.table_name==='transaction'), 'date');
+    el('periodFrom').value = fileDateBounds.min;
+    el('periodTo').value = fileDateBounds.max;
+    updatePeriodBtn('periodFrom','periodTo','clearPeriod2', fileDateBounds);
   }
 
   function renderCategories(){
@@ -652,18 +667,19 @@
     });
   }
 
-  function updatePeriodBtn(fromId, toId, btnId){
-    const active = !el(fromId).value && !el(toId).value;
+  function updatePeriodBtn(fromId, toId, btnId, bounds){
+    bounds = bounds || {min:'', max:''};
+    const active = el(fromId).value === bounds.min && el(toId).value === bounds.max;
     el(btnId).classList.toggle('active', active);
   }
 
   el('backTo1').addEventListener('click', ()=>goStep(1));
   el('clearPeriod2').addEventListener('click', ()=>{
-    el('periodFrom').value=''; el('periodTo').value='';
-    updatePeriodBtn('periodFrom','periodTo','clearPeriod2');
+    el('periodFrom').value = fileDateBounds.min; el('periodTo').value = fileDateBounds.max;
+    updatePeriodBtn('periodFrom','periodTo','clearPeriod2', fileDateBounds);
   });
-  el('periodFrom').addEventListener('change', ()=>updatePeriodBtn('periodFrom','periodTo','clearPeriod2'));
-  el('periodTo').addEventListener('change', ()=>updatePeriodBtn('periodFrom','periodTo','clearPeriod2'));
+  el('periodFrom').addEventListener('change', ()=>updatePeriodBtn('periodFrom','periodTo','clearPeriod2', fileDateBounds));
+  el('periodTo').addEventListener('change', ()=>updatePeriodBtn('periodFrom','periodTo','clearPeriod2', fileDateBounds));
   updatePeriodBtn('periodFrom','periodTo','clearPeriod2');
 
   el('toStep3').addEventListener('click', ()=>{
@@ -691,10 +707,11 @@
       const p = parseNote(tx.note);
       txLines[tx.id] = [{ qty:p.qty, design:p.design, size:p.size, complex:p.complex, manualAmount:null }];
     });
-    // pre-fill the same period on the report step, still adjustable there
-    el('dateFrom').value = from;
-    el('dateTo').value = to;
-    updatePeriodBtn('dateFrom','dateTo','clearDates');
+    // pre-fill the report step with the real first/last date among the filtered sales
+    reportDateBounds = dateBoundsOf(filteredTx, 'date');
+    el('dateFrom').value = reportDateBounds.min;
+    el('dateTo').value = reportDateBounds.max;
+    updatePeriodBtn('dateFrom','dateTo','clearDates', reportDateBounds);
     renderTxTable();
   }
 
@@ -898,16 +915,16 @@
   el('toStep5').addEventListener('click', ()=> goStep(5));
   el('backTo4').addEventListener('click', ()=>goStep(4));
   el('dateFrom').addEventListener('change', ()=>{
-    updatePeriodBtn('dateFrom','dateTo','clearDates');
+    updatePeriodBtn('dateFrom','dateTo','clearDates', reportDateBounds);
     renderReport();
   });
   el('dateTo').addEventListener('change', ()=>{
-    updatePeriodBtn('dateFrom','dateTo','clearDates');
+    updatePeriodBtn('dateFrom','dateTo','clearDates', reportDateBounds);
     renderReport();
   });
   el('clearDates').addEventListener('click', ()=>{
-    el('dateFrom').value=''; el('dateTo').value='';
-    updatePeriodBtn('dateFrom','dateTo','clearDates');
+    el('dateFrom').value = reportDateBounds.min; el('dateTo').value = reportDateBounds.max;
+    updatePeriodBtn('dateFrom','dateTo','clearDates', reportDateBounds);
     renderReport();
   });
 
@@ -1032,11 +1049,12 @@
 
   el('restart').addEventListener('click', ()=>{
     rawRows=[]; categories=[]; selectedCatIds=new Set(); filteredTx=[]; txLines={};
+    fileDateBounds={min:'',max:''}; reportDateBounds={min:'',max:''};
     fileInput.value='';
     el('periodFrom').value=''; el('periodTo').value='';
     el('dateFrom').value=''; el('dateTo').value='';
-    updatePeriodBtn('periodFrom','periodTo','clearPeriod2');
-    updatePeriodBtn('dateFrom','dateTo','clearDates');
+    updatePeriodBtn('periodFrom','periodTo','clearPeriod2', fileDateBounds);
+    updatePeriodBtn('dateFrom','dateTo','clearDates', reportDateBounds);
     goStep(1);
   });
 
